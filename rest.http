@@ -11,8 +11,19 @@ Content-Type: application/json
 {
     "fName": "Bibek",
     "lName": "Hamal",
-    "email": "b@c.com",
+    "email": "b@e.com",
     "password": "text",
     "role": "admin"
 
 }
+
+###login a user
+POST {{rootUrl}}/api/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "b@e.com",
+    "password": "text"
+
+}
+
