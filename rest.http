@@ -1,4 +1,18 @@
 @rootUrl = http://localhost:3000
 
-//check if server is running
+###check if server is running
 GET {{rootUrl}}
+
+###creating a new user
+
+POST {{rootUrl}}/api/v1/auth/register
+Content-Type: application/json
+
+{
+    "fName": "Bibek",
+    "lName": "Hamal",
+    "email": "b@c.com",
+    "password": "text",
+    "role": "admin"
+
+}
