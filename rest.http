@@ -9,11 +9,11 @@ POST {{rootUrl}}/api/v1/auth/register
 Content-Type: application/json
 
 {
-    "fName": "Bibek",
-    "lName": "Hamal",
-    "email": "b@e.com",
+    "fName": "Manoj",
+    "lName": "Adhikari",
+    "email": "m@a.com",
     "password": "text",
-    "role": "admin"
+    "role": "user"
 
 }
 
@@ -22,7 +22,7 @@ POST {{rootUrl}}/api/v1/auth/login
 Content-Type: application/json
 
 {
-    "email": "b@e.com",
+    "email": "m@a.com",
     "password": "text"
 
 }
