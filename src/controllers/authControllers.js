@@ -1,5 +1,7 @@
 import { createNewUser, getUserByEmail } from "../models/user/UserModel.js"
 import { generateJWT } from "../utils/jwt.js";
+import {generateRefreshToken} from "../utils/refreshToken.js";
+import { verifyRefreshToken } from "../utils/verifyRefreshToken.js";
 import bcrypt from "bcryptjs";
 
 export const addNewUserController = async (req, res, next) => {
@@ -64,10 +66,12 @@ export const loginController = async (req, res, next) => {
        
         //generate JWT 
         const token = generateJWT({_id: user._id, role:user.role});
+        const refreshToken = generateRefreshToken({_id: user._id, role:user.role});
         res.json({
             status: "success",
             message: "Login successful",
             token,
+            refreshToken,
             user: {
                 _id: user._id,
                 fName: user.fName,
