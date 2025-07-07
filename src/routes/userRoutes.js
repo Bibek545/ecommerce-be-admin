@@ -7,10 +7,13 @@ const router = express.Router()
 
 router.post('/register', addNewUserController);
 
-export default router;
-
 
 // login user
 
 router.post('/login', loginController);
+
+export default router;
+
+
+
 
