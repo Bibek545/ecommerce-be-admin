@@ -4,12 +4,13 @@ import express from 'express';
 import { dbConnect } from './src/config/dbConfig.js';
 
 import router from './src/routes/userRoutes.js';
-
+import cors from 'cors';
 const app = express ()
 
-const PORT = 3000;
+const PORT = 8000;
 
 // db connection mongo
+app.use(cors());
 app.use(express.json());
 
 

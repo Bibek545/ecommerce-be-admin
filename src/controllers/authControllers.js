@@ -6,7 +6,8 @@ import bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from "uuid";
 import { emailTransporter } from "../services/transport.js";
 import { userActivationEmail } from "../services/emailService.js";
-import { createNewSession } from "../../../../LMS/lms-be/src/models/session/SessionModel.js";
+import { createNewSession } from "../models/session/sessionModel.js";
+import jwt from "jsonwebtoken";
 
 export const addNewUserController = async (req, res, next) => {
   try {
@@ -47,7 +48,9 @@ export const addNewUserController = async (req, res, next) => {
       }
     }
     // Generate JWT
-    // const token = generateJWT({ _id: user._id, role: user.role });
+    const token = generateJWT({ _id: user._id, role: user.role });
+    user.token = token;
+    await user.save();
 
     // Generate JWT for email verification
     //    const emailToken = jwt.sign(
@@ -69,7 +72,7 @@ export const addNewUserController = async (req, res, next) => {
       status: "success",
       message:
         "New user created successfully. Please check your email to verify your account",
-    //   token,
+      token,
       user: {
         _id: user._id,
         fName: user.fName,
@@ -79,6 +82,7 @@ export const addNewUserController = async (req, res, next) => {
       },
     });
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };

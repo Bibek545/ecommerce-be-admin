@@ -1,4 +1,4 @@
-@rootUrl = http://localhost:3000
+@rootUrl = http://localhost:8000
 
 ###check if server is running
 GET {{rootUrl}}
@@ -9,10 +9,10 @@ POST {{rootUrl}}/api/v1/auth/register
 Content-Type: application/json
 
 {
-    "fName": "Manoj",
-    "lName": "Adhikari",
-    "email": "m@a.com",
-    "password": "text",
+    "fName": "bibek",
+    "lName": "malla",
+    "email": "b@k.com",
+    "password": "texy",
     "role": "user"
 
 }
