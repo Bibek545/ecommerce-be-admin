@@ -142,3 +142,25 @@ export const loginController = async (req, res, next) => {
     next(error);
   }
 };
+
+export const verifyEmailController = (req, res, next) => {
+  try {
+    const { sessionId, token } = req.body;
+
+    if(!sessionId || !token) {
+      return res.status(400).json({
+        status: "error",
+        message: "Invalid or missionh token",
+      });
+    }
+
+
+    return res.json ({
+      status: "success",
+      message: "Your account has been verified",
+    });
+  } catch(error) {
+    next(error);
+  }
+
+};

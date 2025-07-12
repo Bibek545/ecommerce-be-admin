@@ -30,3 +30,6 @@ app.listen(PORT, ()=> {
 //making a route from creating a user
 
 app.use("/api/v1/auth", router);
+
+//activateuser
+app.use("/api/v1/auth", router);

@@ -1,5 +1,5 @@
 import express from "express";
-import {addNewUserController, loginController} from "../controllers/authControllers.js"; 
+import {addNewUserController, loginController, verifyEmailController} from "../controllers/authControllers.js"; 
 
 const router = express.Router()
 
@@ -15,5 +15,5 @@ router.post('/login', loginController);
 export default router;
 
 
-
+router.post("/verify-email", verifyEmailController)
 
