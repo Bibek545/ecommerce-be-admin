@@ -27,3 +27,11 @@ Content-Type: application/json
 
 }
 
+###activate new user
+POST {{rootUrl}}/api/v1/auth/verify-email
+Content-Type: application/json 
+
+{
+    "sessionId": "687628168646a70b6ebd70f8",
+    "t": "76cdd7de-1c7e-4df8-bdef-d730abcb40fe"
+}

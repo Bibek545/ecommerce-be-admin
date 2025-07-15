@@ -10,7 +10,7 @@ export const userActivationTemplate = ({email, name, url}) => {
         <br />
         <p>Your account has been created.Click the link to activate the account.</p>
         <br />
-        <a href = ${url}
+        <a href = "${url}">
         <button>Activate your account</button>
         </a> 
 

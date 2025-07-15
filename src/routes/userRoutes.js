@@ -14,6 +14,6 @@ router.post('/login', loginController);
 
 export default router;
 
-
+//verify user
 router.post("/verify-email", verifyEmailController)
 
