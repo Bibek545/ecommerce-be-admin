@@ -22,8 +22,8 @@ POST {{rootUrl}}/api/v1/auth/login
 Content-Type: application/json
 
 {
-    "email": "m@a.com",
-    "password": "text"
+    "email": "b@k.com",
+    "password": "texy"
 
 }
 

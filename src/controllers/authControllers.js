@@ -1,13 +1,23 @@
-import { createNewUser, getUserByEmail } from "../models/user/UserModel.js";
+import {
+  createNewUser,
+  getUserByEmail,
+  updateUser,
+} from "../models/user/UserModel.js";
 import { generateJWT } from "../utils/jwt.js";
 import { generateRefreshToken } from "../utils/refreshToken.js";
 import { verifyRefreshToken } from "../utils/verifyRefreshToken.js";
 import bcrypt from "bcryptjs";
 import { v4 as uuidv4 } from "uuid";
 import { emailTransporter } from "../services/transport.js";
-import { userActivationEmail } from "../services/emailService.js";
+import {
+  userAccountVerifiedEmail,
+  userActivationEmail,
+} from "../services/emailService.js";
 import { createNewSession } from "../models/session/sessionModel.js";
 import jwt from "jsonwebtoken";
+import { deleteSession } from "../../../../LMS/lms-be/src/models/session/SessionModel.js";
+import { token } from "morgan";
+import { responseClient } from "../middleware/responseClient.js";
 
 export const addNewUserController = async (req, res, next) => {
   try {
@@ -29,14 +39,12 @@ export const addNewUserController = async (req, res, next) => {
         association: user.email,
       });
       if (session?._id) {
-
-           const emailToken = jwt.sign(
+        const emailToken = jwt.sign(
           { email: user.email },
           process.env.JWT_SECRET,
           { expiresIn: "1h" }
         );
         const url = `${process.env.ROOT_URL}/activate-user?sessionId=${session._id}&t=${emailToken}`;
-     
 
         //send activation email
         await userActivationEmail({
@@ -143,24 +151,35 @@ export const loginController = async (req, res, next) => {
   }
 };
 
-export const verifyEmailController = (req, res, next) => {
+export const verifyEmailController = async (req, res, next) => {
   try {
-    const { sessionId, token } = req.body;
+    const { sessionId, t } = req.body;
+    console.log(sessionId, t);
 
-    if(!sessionId || !token) {
-      return res.status(400).json({
-        status: "error",
-        message: "Invalid or missionh token",
-      });
+    const session = await deleteSession({
+      _id: sessionId,
+      token: t,
+    });
+    console.log(session);
+
+    if (session?.id) {
+      //update user to activate
+      const user = await updateUser(
+        { email: session.association },
+        { status: "active" }
+      );
+
+      if (user?._id) {
+        userAccountVerifiedEmail({ email: user.email, name: user.fName });
+        const message = "Your account has been verified, you can log in.";
+        return responseClient({ req, res, message });
+      }
     }
 
-
-    return res.json ({
-      status: "success",
-      message: "Your account has been verified",
-    });
-  } catch(error) {
+    const message = " Invalid token or token expired";
+    const statsCode = 400;
+    return responseClient({ req, res, message });
+  } catch (error) {
     next(error);
   }
-
 };
