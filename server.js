@@ -1,35 +1,59 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
-import { dbConnect } from './src/config/dbConfig.js';
 
-import router from './src/routes/userRoutes.js';
-import cors from 'cors';
+
+
+
 const app = express ()
 
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
+
+import { dbConnect } from './src/config/dbConfig.js';
 
 // db connection mongo
+//middlewares
+import cors from 'cors';
+import morgan from 'morgan';
 app.use(cors());
+app.use(morgan("dev"));
+
+//parse your json files
 app.use(express.json());
 
 
-dbConnect();
+//API endpoints
+import router from './src/routes/userRoutes.js';
+import { errorHandle } from './src/middleware/errorHandler.js';
+import { responseClient } from './src/middleware/responseClient.js';
+app.use("/api/v1/auth", router);
+
+
 
 // simple server
 app.get('/', (req, res) => {
-    res.send("The server is live and mongo is working")
-    
+    const message = "Server is late";
+    responseClient({req,res ,message})
+   
 });
 
-app.listen(PORT, ()=> {
-    console.log(`Server is running on http://localhost:${PORT}`)
-});
+app.use(errorHandle);
+app.use(responseClient);
 
+dbConnect()
+.then(()=> {
+    app.listen(PORT, error => {
+        error
+        ? console.log(error)
+        : console.log(`Server is running on http://localhost:${PORT}`)
+    });
+})
+.catch((error)=> console.log(error));
 
 //making a route from creating a user
 
-app.use("/api/v1/auth", router);
+// app.use("/api/v1/auth", router);
 
-//activateuser
-app.use("/api/v1/auth", router);
+// //activateuser
+// app.use("/api/v1/auth", router);
+

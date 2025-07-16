@@ -32,6 +32,6 @@ POST {{rootUrl}}/api/v1/auth/verify-email
 Content-Type: application/json 
 
 {
-    "sessionId": "687628168646a70b6ebd70f8",
-    "t": "76cdd7de-1c7e-4df8-bdef-d730abcb40fe"
+    "sessionId": "68774e8a617b1b8805feb019",
+    "t": "4d09c46a-7122-4750-a2af-f167ba4adeb8"
 }

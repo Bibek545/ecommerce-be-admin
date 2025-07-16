@@ -18,6 +18,7 @@ import jwt from "jsonwebtoken";
 import { deleteSession } from "../../../../LMS/lms-be/src/models/session/SessionModel.js";
 import { token } from "morgan";
 import { responseClient } from "../middleware/responseClient.js";
+import mongoose from "mongoose";
 
 export const addNewUserController = async (req, res, next) => {
   try {
@@ -38,59 +39,43 @@ export const addNewUserController = async (req, res, next) => {
         token: uuidv4(),
         association: user.email,
       });
+
       if (session?._id) {
-        const emailToken = jwt.sign(
-          { email: user.email },
-          process.env.JWT_SECRET,
-          { expiresIn: "1h" }
-        );
-        const url = `${process.env.ROOT_URL}/activate-user?sessionId=${session._id}&t=${emailToken}`;
+
+        // this is imp 
+
+        // const emailToken = jwt.sign(
+        //   { email: user.email },
+        //   process.env.JWT_SECRET,
+        //   { expiresIn: "1h" }
+        // );
+        const url = `${process.env.ROOT_URL}/verify-email?sessionId=${session._id}&t=${session.token}`;
 
         //send activation email
-        await userActivationEmail({
+        console.log(url);
+
+        const emailId = await userActivationEmail({
           email: user.email,
           name: user.fName,
           url,
         });
         console.log(url);
       }
+
+       const message = "we have sent you an email with the activation link. Please check your email.";
+   return responseClient({req, res, message});
+
+
     }
-    // Generate JWT
-    const token = generateJWT({ _id: user._id, role: user.role });
-    user.token = token;
-    await user.save();
 
-    // Generate JWT for email verification
-    //    const emailToken = jwt.sign(
-    //     { email: user.email},
-    //     process.env.JWT_SECRET,
-    //     {expiresIn: "1h"}
-    //    )
+    throw new Error("Unable to create account, try again later.");
 
-    //     //send activation email
-    //     await userActivationEmail({
-    //         email:user.email,
-    //         name:user.fName,
-    //         url,
-    //     })
-    //      console.log(url);
-
-    //3.send the success response
-    res.status(201).json({
-      status: "success",
-      message:
-        "New user created successfully. Please check your email to verify your account",
-      token,
-      user: {
-        _id: user._id,
-        fName: user.fName,
-        lName: user.lName,
-        email: user.email,
-        role: user.role,
-      },
-    });
   } catch (error) {
-    console.log(error);
+    console.log("Error in register--->",error);
+    if(error.message.includes("E11000 duplicate key errror collection")) {
+      error.message = "This email already exist, try different email";
+      error.statusCode = 400;
+    }
     next(error);
   }
 };
@@ -152,6 +137,7 @@ export const loginController = async (req, res, next) => {
 };
 
 export const verifyEmailController = async (req, res, next) => {
+  
   try {
     const { sessionId, t } = req.body;
     console.log(sessionId, t);
@@ -162,7 +148,7 @@ export const verifyEmailController = async (req, res, next) => {
     });
     console.log(session);
 
-    if (session?.id) {
+    if (session?._id) {
       //update user to activate
       const user = await updateUser(
         { email: session.association },
@@ -177,7 +163,7 @@ export const verifyEmailController = async (req, res, next) => {
     }
 
     const message = " Invalid token or token expired";
-    const statsCode = 400;
+    const statusCode = 400;
     return responseClient({ req, res, message });
   } catch (error) {
     next(error);

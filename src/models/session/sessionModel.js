@@ -1,9 +1,10 @@
-import sessionSchema from "./sessionSchema.js";
+import SessionSchema from "./sessionSchema.js";
+import mongoose from "mongoose";
 
 export const createNewSession = (sessionObj) => {
-    return sessionSchema(sessionObj).save();
+    return SessionSchema(sessionObj).save();
 } 
 
 export const deleteSession=(filter) => {
- return sessionSchema.findOneAndDelete(filter);
+ return SessionSchema.findOne(filter);
 }

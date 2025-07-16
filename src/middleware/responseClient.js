@@ -1,4 +1,4 @@
-export const responseClient = ({req, res , message, statsCode = 200}) => {
+export const responseClient = ({req, res , message, statusCode = 200}) => {
 
 
     // success response
@@ -12,7 +12,7 @@ export const responseClient = ({req, res , message, statsCode = 200}) => {
 
     // error response 
     req.error = () => {
-        return res.status(statsCode).json({
+        return res.status(statusCode).json({
             status: "error",
             message,
         });
@@ -20,7 +20,7 @@ export const responseClient = ({req, res , message, statsCode = 200}) => {
 
 
 
-    if(statsCode >= 200 && statsCode < 300) {
+    if(statusCode >= 200 && statusCode < 300) {
         return req.success()
     } else {
         return req.error();
